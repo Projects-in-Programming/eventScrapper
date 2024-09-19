@@ -1,2 +1,7 @@
 .events_env
 .DS_Store
+*.pyc 
+__pycache__/
+.env
+.vscode/
+
