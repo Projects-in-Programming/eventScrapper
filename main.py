@@ -12,7 +12,7 @@ Events = []
 # Set a rate limit (in seconds)
 RATE_LIMIT = 1
 
-# Get event pages for the week until Sunday
+# converting date to string to put in the website
 def conv_date_to_string(today_date):
   today_date = str(today_date)
   today_date = today_date.replace('-','')
@@ -37,7 +37,7 @@ def get_event_pages_for_week():
         webpage = "https://events.nyu.edu/day/date/" + today_str
         print(webpage)
 
-        # Add error handling for TimeoutException
+        # error handling for TimeoutException
         try:
             driver.get(webpage)
             time.sleep(RATE_LIMIT)
@@ -51,46 +51,59 @@ def get_event_pages_for_week():
         # For the top highlighted Event
         feature_top = soup.find_all('div', class_ = 'feature-top')
         for feature in feature_top:
+
+            # get url to the event
             link = feature.find('a', href = True)['href']
             link = correct_url(link)
+            
+            # getting the event detail container and accessing all the details
             feature = feature.find('div', {'class': 'feature-top-info' })
             event_name = feature.h4.text
 
+            # start time, first check if its there
             if feature.find('div', {'class': 'nyu-date-time'}).find('span', {'class': 'lw_start_time'}):
                 start = feature.find('div', {'class': 'nyu-date-time'}).find('span', {'class': 'lw_start_time'}).text
             else:
                 start = None
 
+            # end time, first check if its there
             if feature.find('div', {'class': 'nyu-date-time'}).find('span', {'class': 'lw_end_time'}):
                 end = feature.find('div', {'class': 'nyu-date-time'}).find('span', {'class': 'lw_end_time'}).text
             else:
                 end = None
+
+            # add event to the list
             Events.append({'Event Name': event_name,'Date': today, 'Start':start , 'End': end, 'Link': link})
 
         # For other events
+        
+        # lw_cal_event is  hte container that contains details for each event
         all_events = soup.find_all('div', class_='lw_cal_event')
         n = 1
         for target in all_events:
+            # get the event name and link
             title = target.find('div', {'class':'lw_events_title'})
             text = title.a.text
             link = title.a['href']
             link = correct_url(link)
-            time_ = target.find('div', {'class':'nyu-date-time'})
 
+            # get the start and end time
+            time_ = target.find('div', {'class':'nyu-date-time'})
             if time_.find('span', {'class': 'lw_start_time'}):
                 start = time_.find('span', {'class': 'lw_start_time'}).text
             else:
                 start = None
-
             if time_.find('span', {'class': 'lw_end_time'}):
                 end = time_.find('span', {'class': 'lw_end_time'}).text
             else:
                 end = None
 
+            # add event to the list
             Events.append({'Event Name': text,'Date': today, 'Start':start , 'End': end, 'Link': link})
             n += 1
         print(f'{n} events for {today}')
 
+        # Increment the date
         today = today + datetime.timedelta(days=1)
         today_str = conv_date_to_string(today)
         day_of_the_week = day_of_the_week + 1
