@@ -47,6 +47,9 @@ python event_scraper.py
 * The script uses error handling to catch `TimeoutException` errors that may occur when accessing the website. If a `TimeoutException` error occurs, the script will print an error message and continue to the next iteration of the loop.
 * The script assumes that the HTML structure of the NYU Events website will not change. If the website's HTML structure changes, the script may need to be modified to continue working correctly.
 
+## Contributors
+Ashok
+Nirup
 
 ## Future Work
 
