@@ -10,6 +10,8 @@ The events page of the website has listing of so many events and we wanted a way
 
 We decided to use selenium here because the website contains JS loader and using just Beautiful soup would not capture the loaded data. 
 
+Similarly, we also added rate limit so that no more than 1 request are send in a second. Also we added error handing for `TimeoutException` when the webpage is not loaded for a long period of time. 
+
 ## Requirements
 
 * Python 3.x
